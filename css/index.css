@@ -35,13 +35,9 @@ body {
 .texto h1{
     font-weight: bold; 
 }
-
-.bg-blanco-txt-negro{
-    color: black;
-}
-.quienes-somos{
+  .bg-gris{
     background-color: #E8E8E8; 
-}
+  }
 .quienes-somos img{
     width: 100%;
 }
@@ -53,3 +49,16 @@ body {
 .card{
     margin-bottom: 3em;
 }
+
+.bg-contactanos {
+    height: calc(100vh);
+    background-image: url('/assets/img/bg-contact.jpg');
+    background-size: cover; 
+    background-position: center;   
+}
+ 
+ 
+  .form-contact{
+    background-color: #fff;
+    border-radius: 7px;
+  }
