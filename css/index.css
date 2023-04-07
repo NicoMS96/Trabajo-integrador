@@ -14,7 +14,7 @@ body {
     color: white !important;
 }  
 .titulo {
-    font-family: 'Inknut Antiqua', serif;
+    font-family: 'Inknut Antiqua', serif; 
 }
 
 .bg-nav {
@@ -50,15 +50,23 @@ body {
     margin-bottom: 3em;
 }
 
-.bg-contactanos {
-    height: calc(100vh);
+.bg-contactanos { 
     background-image: url('/assets/img/bg-contact.jpg');
     background-size: cover; 
     background-position: center;   
 }
  
+
+  .form-contact h2{
+    color: white;
+  }
  
   .form-contact{
-    background-color: #fff;
+    background-color: #0000002d;
     border-radius: 7px;
+    backdrop-filter: blur(2px);
+  }
+  textarea{
+    height: 200px!important;
+    resize: none;
   }
