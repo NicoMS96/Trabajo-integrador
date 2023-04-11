@@ -13,8 +13,10 @@ body {
 .bg-principal,.bg-principal a,.bg-principal h3 {
     color: white !important;
 }  
-.titulo {
-    font-family: 'Inknut Antiqua', serif; 
+.titulo h2{
+    /* font-family: 'Inknut Antiqua', serif;  */
+    font-family: 'Poppins', sans-serif;  
+    font-weight: 700;
 }
 
 .bg-nav {
@@ -49,7 +51,7 @@ body {
 .card{
     margin-bottom: 3em;
 }
-
+ 
 .bg-contactanos { 
     background-image: url('/assets/img/bg-contact.jpg');
     background-size: cover; 
@@ -69,4 +71,10 @@ body {
   textarea{
     height: 200px!important;
     resize: none;
+  }
+  i{
+    font-weight: 400;
+    color: rgb(0, 255, 0);
+    font-size: 1.3em;
+    padding: 4px;
   }
