@@ -62,7 +62,6 @@ $(document).ready(function () {
 });
 
 // Enviar mail
-
 $(document).ready(function(){
     $('#enviarMail').submit(function(event){
        // Detener el envío del formulario normal
@@ -100,3 +99,43 @@ $.ajax({
     }
 });
 
+
+
+// Variables para controlar el formulario
+const form = document.getElementById('form-wizard');
+const prev1 = document.getElementById('prev-2');
+const prev2 = document.getElementById('prev-3');
+const next1 = document.getElementById('next-1');
+const next2 = document.getElementById('next-2');
+const steps = form.querySelectorAll('fieldset');
+let currentStep = 0;
+
+// Funciones para avanzar y retroceder en los pasos
+function showStep(step) {
+  steps[currentStep].style.display = 'none';
+  steps[step].style.display = 'block';
+  currentStep = step;
+}
+
+function nextStep() {
+  if (currentStep < steps.length - 1) {
+    showStep(currentStep + 1);
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    showStep(currentStep - 1);
+  }
+}
+
+// Event listeners para los botones de avanzar y retroceder
+next1.addEventListener('click', nextStep);
+next2.addEventListener('click', nextStep);
+prev1.addEventListener('click', prevStep);
+prev2.addEventListener('click', prevStep);
+
+// Ocultar todos los pasos excepto el primero
+for (let i = 1; i < steps.length; i++) {
+  steps[i].style.display = 'none';
+}
