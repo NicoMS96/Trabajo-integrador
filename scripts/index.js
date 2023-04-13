@@ -88,14 +88,14 @@ $(document).ready(function () {
 });
 
 
-let precioDolarBlue;
+let precioDolarBlue=0;
 // Utilizo otra API para obtener el precio del dolar blue (compra) para despues calcular cotizacion de tattoo 
 $.ajax({
   url: 'https://www.dolarsi.com/api/api.php?type=valoresprincipales',
   dataType: 'json',
   success: function (data) {
-    console.log(data[1].casa.nombre + " " + data[1].casa.compra);
-    precioDolarBlue = data[1].casa.compra;
+    console.log(data[1].casa.nombre + " " + data[1].casa.compra); 
+    precioDolarBlue = data[1].casa.compra; 
   }
 });
 
@@ -186,64 +186,61 @@ $(document).ready(function () {
     else {
       precioTattoo -= 8;
     }
-    totalTattoo(precioTattoo, porcentajes);    
+    totalTattoo(precioTattoo, porcentajes);
   })
 
 
   let tamañoAnterior = null;
-
   $("#tamaño").change(() => {
-    const tamañoSeleccionado = $("#tamaño").val();
+    const tamañoSeleccionado = Number($("#tamaño").val()); 
 
-    switch (tamañoAnterior) {
-      case "pequeño":
-        precioTattoo -= 25;
-        break;
-      case "mediano":
-        precioTattoo -= 28;
-        break;
-      case "grande":
-        precioTattoo -= 35;
-        break;
-      case "mediaManga":
-        precioTattoo -= 50;
-        break;
-      case "mangaCompleta":
-        precioTattoo -= 100;
-        break;
-      case "espalda":
-        precioTattoo -= 200;
-        break;
-    }
+    precioTattoo -= tamañoAnterior; 
 
-    switch (tamañoSeleccionado) {
-      case "pequeño":
-        precioTattoo += 25;
-        break;
-      case "mediano":
-        precioTattoo += 28;
-        break;
-      case "grande":
-        precioTattoo += 35;
-        break;
-      case "mediaManga":
-        precioTattoo += 50;
-        break;
-      case "mangaCompleta":
-        precioTattoo += 100;
-        break;
-      case "espalda":
-        precioTattoo += 200;
-        break;
-    }
-
+    precioTattoo += tamañoSeleccionado; 
 
     tamañoAnterior = tamañoSeleccionado;
     totalTattoo(precioTattoo, porcentajes);
   });
+ 
+  let detalleAnterior = null;
+  $("#detalles").change(() => {
+    const detalleSeleccionado = Number($("#detalles").val()); 
+
+    porcentajes -= detalleAnterior; 
+
+    porcentajes += detalleSeleccionado; 
+
+    detalleAnterior = detalleSeleccionado;
+    totalTattoo(precioTattoo, porcentajes);
+  });
+
+  let estiloAnterior = null;
+  $("#estilo").change(() => {
+    const estiloSeleccionado = Number($("#estilo").val()); 
+
+    precioTattoo -= estiloAnterior; 
+
+    precioTattoo += estiloSeleccionado; 
+
+    estiloAnterior = estiloSeleccionado;
+    totalTattoo(precioTattoo, porcentajes);
+  });
+
+  let lugarAnterior = null;
+  $("#lugar").change(() => {
+    const lugarSeleccionado = Number($("#lugar").val()); 
+
+    precioTattoo -= lugarAnterior; 
+
+    precioTattoo += lugarSeleccionado; 
+
+    lugarAnterior = lugarSeleccionado;
+    totalTattoo(precioTattoo, porcentajes);
+  });
 
 
-  totalTattoo = function (precioTattoo, porcentajes) {
+  totalTattoo = function (precioTattoo, porcentajes) { 
+     
     precio.text(`$${(precioTattoo * (1 + porcentajes)).toFixed("2")}`);
   }
 
