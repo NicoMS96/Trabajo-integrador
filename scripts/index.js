@@ -66,26 +66,66 @@ $(document).ready(function () {
   $('#enviarMail').submit(function (event) {
     // Detener el envío del formulario normal
     event.preventDefault();
+    let nombre = $("#form-nombre").val();
+    let email = $("#form-email").val();
+    let asunto = $("#form-asunto").val();
+    let mensaje = $("#form-mensaje").val();
 
-    // Enviar el formulario usando AJAX
-    $.ajax({
-      type: 'POST',
-      url: 'https://formsubmit.co/93cb82c32ca4cf95c8febefe78285067',
-      data: $(this).serialize()
-    })
-      .done(function (response) {
-        // Manejar la respuesta del servidor
-        console.log(response);
-        // Opcionalmente, mostrar un mensaje de éxito
-        alert('Formulario enviado correctamente!');
+    if (validarFromContacto(nombre, email, asunto, mensaje)) {
+      // Enviar el formulario usando AJAX
+      $.ajax({
+        type: 'POST',
+        url: 'https://formsubmit.co/93cb82c32ca4cf95c8febefe78285067',
+        data: $(this).serialize()
       })
-      .fail(function (data) {
-        // Manejar el error del servidor
-        console.log(data);
-        alert('Error al enviar el formulario');
-      });
+        .done(function (response) {
+          // Manejar la respuesta del servidor
+          console.log(response);
+          // Opcionalmente, mostrar un mensaje de éxito
+          alert('Formulario enviado correctamente!');
+        })
+        .fail(function (data) {
+          // Manejar el error del servidor
+          console.log(data);
+          alert('Error al enviar el formulario');
+        });
+    } else {
+
+    }
+
   });
 });
+
+let validarFromContacto = function (nombre, email, asunto, mensaje) {
+  let valid = true;
+  let error = "";
+
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  if(nombre==""){
+    valid=false;
+    error += "El campo nombre no puede estar vacio \n";
+  }
+  if(email==""){
+    valid=false;
+    error += "El campo email no puede estar vacio \n";
+  }
+  if(!re.test(email)){
+    valid=false;
+    error += "El campo email no tiene formato correcto \n";
+  } 
+  if(asunto==""){
+    valid=false;
+    error += "El campo asunto no puede estar vacio \n";
+  }
+  if(mensaje==""){
+    valid=false;
+    error += "El campo mensaje no puede estar vacio \n";
+  }
+  alert(error);
+  return valid;
+}
+
 
 
 let precioDolarBlue = 0;
@@ -232,11 +272,16 @@ $(document).ready(function () {
   totalTattoo = function (precioTattoo, porcentajes) {
     precioBase = precioTattoo;
     precioTotal = precioTattoo * (1 + porcentajes);
-    precio.text(`$${(precioTattoo * (1 + porcentajes)).toFixed("2")}`);
+    precio.text(`$${(precioTotal).toFixed("2")}`);
   }
 
+  /*
+    const submitButton = event.target.querySelector('button[type="submit"]');
+    submitButton.removeAttribute('data-bs-toggle');
+    submitButton.removeAttribute('data-bs-target');
+  */
 
-  // Agregar controlador de eventos al botón Cotizar
+  // evento del submit
   $('#form-wizard').on('submit', function (event) {
     event.preventDefault();
 
@@ -254,12 +299,12 @@ $(document).ready(function () {
     let porcPerso = $('#personalizado').is(":checked") ? 0.2 : 0;
     let opcAnestesia = $('#anestesia').is(":checked") ? "Si" : "No";
     let anestesia = $('#personalizado').is(":checked") ? 8 : 0;
-     
+
     totalTattoo(precioTattoo, porcentajes);
 
-    //if (validarCotizacion(tamaño, detalles, estilo, lugar)) {
-    let divDatos = $("#datosResumen");
-    divDatos.html(`<div class="d-flex justify-content-between"> 
+    if (validarCotizacion(tamaño, detalles, estilo, lugar)) {
+      let divDatos = $("#datosResumen");
+      divDatos.html(`<div class="d-flex justify-content-between"> 
                       <span>Tamaño: ${opcTamaño} </span><span>$${tamaño}</span>
                     </div>
                     <div class="d-flex justify-content-between"> 
@@ -278,15 +323,14 @@ $(document).ready(function () {
                       <span>Lugar: ${opcLugar} </span><span>$${lugar}</span>
                     </div>
                     <div class="d-flex justify-content-between"> 
-                      <span>Anestesia?: ${opcLugar} </span><span>$${anestesia}</span>
+                      <span>Anestesia?: ${opcAnestesia} </span><span>$${anestesia}</span>
                     </div>
-                    <div class="d-flex justify-content-between"> 
-                      <span> </span><span>Precio total: $${(precioTotal).toFixed("2")}</span>
+                    <div class="d-flex justify-content-between py-2"> 
+                      <span> </span><span><b>Precio total:</b> $${(precioTotal * precioDolarBlue).toFixed("2")}</span>
                     </div>
                     `);
 
-
-    // }
+    }
 
   });
 });
