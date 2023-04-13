@@ -6,7 +6,7 @@ let cardId = 0;
 $.ajax({
   /* desde url le pido que traiga 6 personas, de nacionalidades española, estadounidense, francesa y brasilera,
    y que solo me traiga nombre completo, foto y fecha nacimiento - edad (dob = date of birtday)*/
-  url: 'https://randomuser.me/api/?results=6&nat=ES,US,FR,BR&inc=name,nat,dob,picture,id',
+  url: 'https://randomuser.me/api/?results=6&nat=ES,US,FR,BR&inc=name,nat,dob,picture',
   dataType: 'json',
   success: function (data) {
     data.results.forEach(element => {
@@ -29,7 +29,7 @@ $.ajax({
                 <h5 class="card-title">${element.name.first} ${element.name.last} <span class="fi fi-${element.nat.toLowerCase()}"></span> 
                 </h5>
                 <p class="card-text">${textoCorto}...</p>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="abrirModal(this, event)" class="btn btn-primary card-btn" id="${cardId}">Ver más</a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modalCards" onclick="abrirModal(this, event)" class="btn btn-primary card-btn" id="${cardId}">Ver más</a>
             </div>
         </div>`;
       cardId++;
@@ -88,14 +88,14 @@ $(document).ready(function () {
 });
 
 
-let precioDolarBlue=0;
+let precioDolarBlue = 0;
 // Utilizo otra API para obtener el precio del dolar blue (compra) para despues calcular cotizacion de tattoo 
 $.ajax({
   url: 'https://www.dolarsi.com/api/api.php?type=valoresprincipales',
   dataType: 'json',
   success: function (data) {
-    console.log(data[1].casa.nombre + " " + data[1].casa.compra); 
-    precioDolarBlue = data[1].casa.compra; 
+    console.log(data[1].casa.nombre + " " + data[1].casa.compra);
+    precioDolarBlue = data[1].casa.compra;
   }
 });
 
@@ -141,17 +141,6 @@ for (let i = 1; i < steps.length; i++) {
   steps[i].style.display = 'none';
 }
 
-/*
-  pequeño 25
-  mediano 28
-  grande 35
-  Media manga 50
-  Manga completa 100
-  Espalda 200
-
-  color 18%
-*/
-
 
 let porcentajes = 0;
 let precioTattoo = 0;
@@ -191,24 +180,25 @@ $(document).ready(function () {
 
 
   let tamañoAnterior = null;
+
   $("#tamaño").change(() => {
-    const tamañoSeleccionado = Number($("#tamaño").val()); 
+    const tamañoSeleccionado = Number($("#tamaño").val());
 
-    precioTattoo -= tamañoAnterior; 
+    precioTattoo -= tamañoAnterior;
 
-    precioTattoo += tamañoSeleccionado; 
+    precioTattoo += tamañoSeleccionado;
 
     tamañoAnterior = tamañoSeleccionado;
     totalTattoo(precioTattoo, porcentajes);
   });
- 
+
   let detalleAnterior = null;
   $("#detalles").change(() => {
-    const detalleSeleccionado = Number($("#detalles").val()); 
+    const detalleSeleccionado = Number($("#detalles").val());
 
-    porcentajes -= detalleAnterior; 
+    porcentajes -= detalleAnterior;
 
-    porcentajes += detalleSeleccionado; 
+    porcentajes += detalleSeleccionado;
 
     detalleAnterior = detalleSeleccionado;
     totalTattoo(precioTattoo, porcentajes);
@@ -216,11 +206,11 @@ $(document).ready(function () {
 
   let estiloAnterior = null;
   $("#estilo").change(() => {
-    const estiloSeleccionado = Number($("#estilo").val()); 
+    const estiloSeleccionado = Number($("#estilo").val());
 
-    precioTattoo -= estiloAnterior; 
+    precioTattoo -= estiloAnterior;
 
-    precioTattoo += estiloSeleccionado; 
+    precioTattoo += estiloSeleccionado;
 
     estiloAnterior = estiloSeleccionado;
     totalTattoo(precioTattoo, porcentajes);
@@ -228,19 +218,20 @@ $(document).ready(function () {
 
   let lugarAnterior = null;
   $("#lugar").change(() => {
-    const lugarSeleccionado = Number($("#lugar").val()); 
+    const lugarSeleccionado = Number($("#lugar").val());
 
-    precioTattoo -= lugarAnterior; 
+    precioTattoo -= lugarAnterior;
 
-    precioTattoo += lugarSeleccionado; 
+    precioTattoo += lugarSeleccionado;
 
     lugarAnterior = lugarSeleccionado;
     totalTattoo(precioTattoo, porcentajes);
   });
 
-
-  totalTattoo = function (precioTattoo, porcentajes) { 
-     
+  let precioTotal;
+  totalTattoo = function (precioTattoo, porcentajes) {
+    precioBase = precioTattoo;
+    precioTotal = precioTattoo * (1 + porcentajes);
     precio.text(`$${(precioTattoo * (1 + porcentajes)).toFixed("2")}`);
   }
 
@@ -249,35 +240,83 @@ $(document).ready(function () {
   $('#form-wizard').on('submit', function (event) {
     event.preventDefault();
 
-    let tamaño = $('#tamaño').val();
-    let detalles = $('#detalles').val();
-    let estilo = $('#estilo').val();
-    let lugar = $('#lugar').val();
+    let tamaño = Number($('#tamaño').val());
+    let detalles = Number($('#detalles').val());
+    let estilo = Number($('#estilo').val());
+    let lugar = Number($('#lugar').val());
+    let opcTamaño = $('#tamaño option:selected').text();
+    let opcDetalles = $('#detalles option:selected').text();
+    let opcLugar = $('#lugar option:selected').text();
+    let opcColor = $('#color').is(":checked") ? "Si" : "No";
+    let porcColor = $('#color').is(":checked") ? 0.1 : 0;
+    let opcEstilo = $('#estilo option:selected').text();
+    let opcPerso = $('#personalizado').is(":checked") ? "Si" : "No";
+    let porcPerso = $('#personalizado').is(":checked") ? 0.2 : 0;
+    let opcAnestesia = $('#anestesia').is(":checked") ? "Si" : "No";
+    let anestesia = $('#personalizado').is(":checked") ? 8 : 0;
+     
+    totalTattoo(precioTattoo, porcentajes);
 
-    if (validarCotizacion(tamaño, detalles, estilo, lugar)) {
+    //if (validarCotizacion(tamaño, detalles, estilo, lugar)) {
+    let divDatos = $("#datosResumen");
+    divDatos.html(`<div class="d-flex justify-content-between"> 
+                      <span>Tamaño: ${opcTamaño} </span><span>$${tamaño}</span>
+                    </div>
+                    <div class="d-flex justify-content-between"> 
+                      <span>Color: ${opcColor} </span><span>10% ($${(precioBase * porcColor).toFixed("2")})</span>
+                    </div>
+                    <div class="d-flex justify-content-between"> 
+                      <span>Detalles: ${opcDetalles} </span><span>${(detalles * 100)}% ($${(precioBase * detalles).toFixed("2")})</span>
+                    </div>
+                    <div class="d-flex justify-content-between"> 
+                      <span>Estilo: ${opcEstilo} </span><span>$${estilo}</span>
+                    </div>
+                    <div class="d-flex justify-content-between"> 
+                      <span>Diseño personalizado?: ${opcPerso} </span><span>10% ($${(precioBase * porcPerso).toFixed("2")})</span>
+                    </div>
+                    <div class="d-flex justify-content-between"> 
+                      <span>Lugar: ${opcLugar} </span><span>$${lugar}</span>
+                    </div>
+                    <div class="d-flex justify-content-between"> 
+                      <span>Anestesia?: ${opcLugar} </span><span>$${anestesia}</span>
+                    </div>
+                    <div class="d-flex justify-content-between"> 
+                      <span> </span><span>Precio total: $${(precioTotal).toFixed("2")}</span>
+                    </div>
+                    `);
 
-    }
-    else {
-      alert("Debe seleccionar las opciones en todos los pasos");
-    }
+
+    // }
 
   });
 });
 
 
 
-let valido;
 let validarCotizacion = function (tamaño, detalles, estilo, lugar) {
-  valido = true;
+  let valido = true;
+  let mensaje = "";
 
-  if (tamaño == "")
+  if (tamaño == "") {
     valido = false;
-  if (detalles == "")
+    mensaje += "Seleccione el tamaño del tattoo. \n";
+  }
+  if (detalles == "") {
     valido = false;
-  if (estilo == "")
+    mensaje += "Ingrese detalles sobre el diseño del tattoo. \n";
+  }
+  if (estilo == "") {
     valido = false;
-  if (lugar == "")
+    mensaje += "Seleccione el estilo del tattoo. \n";
+  }
+  if (lugar == "") {
     valido = false;
+    mensaje += "Seleccione el lugar donde quiere el tattoo. \n";
+  }
+
+  if (!valido) {
+    alert(mensaje);
+  }
 
   return valido;
 }
