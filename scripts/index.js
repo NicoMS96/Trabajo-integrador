@@ -39,7 +39,7 @@ $.ajax({
 
 function abrirModal(btn, e) {
   e.preventDefault();
-  element = ruResult[btn.id];
+  let element = ruResult[btn.id];
   let textoLargo = `Gran artista de la industria. Con más de ${lstAñosExp[btn.id]} años de experiencia en el arte del tatuaje, ${element.name.first} ha perfeccionado su técnica para crear diseños únicos y personalizados que se ajustan a las necesidades y deseos de sus clientes.
             La pasión de ${element.name.first} por la creatividad y el arte le ha llevado a crear algunas de las obras de arte corporales más impresionantes en la industria del tatuaje. Su atención al detalle y su habilidad para crear diseños originales han hecho que muchos de sus clientes vuelvan a él una y otra vez. 
             Entre las especialidades de ${element.name.first} se encuentran los tatuajes realistas, estilo acuarela, puntillismo, entre otros. Su capacidad para mezclar técnicas y estilos en un solo diseño lo convierte en uno de los tatuadores más versátiles en el mercado.
@@ -53,18 +53,9 @@ function abrirModal(btn, e) {
 }
 
 
-// no funciona
-$(document).ready(function () {
-  $('#1').click(function (e) {
-    e.preventDefault();
-    alert("asd");
-  });
-});
-
 // Enviar mail
 $(document).ready(function () {
   $('#enviarMail').submit(function (event) {
-    // Detener el envío del formulario normal
     event.preventDefault();
     let nombre = $("#form-nombre").val();
     let email = $("#form-email").val();
@@ -82,15 +73,13 @@ $(document).ready(function () {
           // Manejar la respuesta del servidor
           console.log(response);
           // Opcionalmente, mostrar un mensaje de éxito
-          alert('Formulario enviado correctamente!');
+          alert('Mail enviado correctamente!');
         })
         .fail(function (data) {
           // Manejar el error del servidor
           console.log(data);
-          alert('Error al enviar el formulario');
+          alert('Error al enviar el mail!');
         });
-    } else {
-
     }
 
   });
@@ -101,28 +90,31 @@ let validarFromContacto = function (nombre, email, asunto, mensaje) {
   let error = "";
 
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-  if(nombre==""){
-    valid=false;
+
+  if (nombre == "") {
+    valid = false;
     error += "El campo nombre no puede estar vacio \n";
   }
-  if(email==""){
-    valid=false;
+  if (email == "") {
+    valid = false;
     error += "El campo email no puede estar vacio \n";
   }
-  if(!re.test(email)){
-    valid=false;
+  if (!re.test(email)) {
+    valid = false;
     error += "El campo email no tiene formato correcto \n";
-  } 
-  if(asunto==""){
-    valid=false;
+  }
+  if (asunto == "") {
+    valid = false;
     error += "El campo asunto no puede estar vacio \n";
   }
-  if(mensaje==""){
-    valid=false;
+  if (mensaje == "") {
+    valid = false;
     error += "El campo mensaje no puede estar vacio \n";
   }
-  alert(error);
+
+  if (!valid)
+    alert(error);
+
   return valid;
 }
 
@@ -276,15 +268,38 @@ $(document).ready(function () {
   }
 
   /*
-    const submitButton = event.target.querySelector('button[type="submit"]');
+    const submitButton = $("#modalCotizacion");
     submitButton.removeAttribute('data-bs-toggle');
-    submitButton.removeAttribute('data-bs-target');
+    submitButton.removeAttribute('data-bs-target'); data-bs-toggle="modal" data-bs-target="#modalCotizacion"
   */
+    const submitButton = $("#modalCotizacion");
+  function slect() {
+    var selects = $('select'); // Selecciona todos los elementos <select>
+    var allSelected = true; // Inicializa la variable que indica si todos los selects tienen un valor seleccionado como true
+
+    selects.each(function () { // Itera sobre cada elemento <select>
+      if (!$(this).val() || !validarCotizacion(tamaño, detalles, estilo, lugar)) { // Si el valor seleccionado es falso, es decir, si no hay un valor seleccionado
+        allSelected = false; // Establece la variable allSelected como falsa 
+      }
+    });
+
+    if (allSelected) { // Si todos los selects tienen un valor seleccionado
+      submitButton.attr("data-bs-toggle", "modal");
+      submitButton.attr("data-bs-target", "#modalCotizacion");
+      alert("debe")
+    }
+    else{
+      alert("noo debe")
+      submitButton.removeAttribute('data-bs-toggle');
+      submitButton.removeAttribute('data-bs-target');
+    }
+  }
+  slect();
 
   // evento del submit
   $('#form-wizard').on('submit', function (event) {
     event.preventDefault();
-
+    slect();
     let tamaño = Number($('#tamaño').val());
     let detalles = Number($('#detalles').val());
     let estilo = Number($('#estilo').val());
@@ -304,28 +319,28 @@ $(document).ready(function () {
 
     if (validarCotizacion(tamaño, detalles, estilo, lugar)) {
       let divDatos = $("#datosResumen");
-      divDatos.html(`<div class="d-flex justify-content-between"> 
+      divDatos.html(`<div class="precio-unitario d-flex justify-content-between"> 
                       <span>Tamaño: ${opcTamaño} </span><span>$${tamaño}</span>
                     </div>
-                    <div class="d-flex justify-content-between"> 
-                      <span>Color: ${opcColor} </span><span>10% ($${(precioBase * porcColor).toFixed("2")})</span>
+                    <div class="precio-unitario d-flex justify-content-between"> 
+                      <span>Color: ${opcColor} </span><span>${porcColor * 100}% ($${(precioBase * porcColor).toFixed("2")})</span>
                     </div>
-                    <div class="d-flex justify-content-between"> 
+                    <div class="precio-unitario d-flex justify-content-between"> 
                       <span>Detalles: ${opcDetalles} </span><span>${(detalles * 100)}% ($${(precioBase * detalles).toFixed("2")})</span>
                     </div>
-                    <div class="d-flex justify-content-between"> 
+                    <div class="precio-unitario d-flex justify-content-between"> 
                       <span>Estilo: ${opcEstilo} </span><span>$${estilo}</span>
                     </div>
-                    <div class="d-flex justify-content-between"> 
-                      <span>Diseño personalizado?: ${opcPerso} </span><span>10% ($${(precioBase * porcPerso).toFixed("2")})</span>
+                    <div class="precio-unitario d-flex justify-content-between"> 
+                      <span>Diseño personalizado?: ${opcPerso} </span><span>${porcPerso * 100}% ($${(precioBase * porcPerso).toFixed("2")})</span>
                     </div>
-                    <div class="d-flex justify-content-between"> 
+                    <div class="precio-unitario d-flex justify-content-between"> 
                       <span>Lugar: ${opcLugar} </span><span>$${lugar}</span>
                     </div>
-                    <div class="d-flex justify-content-between"> 
+                    <div class="precio-unitario d-flex justify-content-between"> 
                       <span>Anestesia?: ${opcAnestesia} </span><span>$${anestesia}</span>
                     </div>
-                    <div class="d-flex justify-content-between py-2"> 
+                    <div id="precio-total" class="d-flex justify-content-between my-2"> 
                       <span> </span><span><b>Precio total:</b> $${(precioTotal * precioDolarBlue).toFixed("2")}</span>
                     </div>
                     `);
@@ -364,3 +379,4 @@ let validarCotizacion = function (tamaño, detalles, estilo, lugar) {
 
   return valido;
 }
+

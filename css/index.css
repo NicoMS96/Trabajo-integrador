@@ -1,84 +1,105 @@
 /* fuentes  */
 @import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
-
+:root{
+  --colorGris:#E8E8E8;
+}
 
 body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 
 }
 
-.bg-principal,.bg-principal a,.bg-principal h3 {
-    color: white !important;
-}  
-.titulo h2{
-    /* font-family: 'Inknut Antiqua', serif;  */
-    font-family: 'Poppins', sans-serif;  
-    font-weight: 700;
+.bg-principal,
+.bg-principal a,
+.bg-principal h3 {
+  color: white !important;
+}
+
+.titulo h2 {
+  /* font-family: 'Inknut Antiqua', serif;  */
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
 }
 
 .bg-nav {
-    background-color: transparent;
-    backdrop-filter: blur(10px);
+  background-color: transparent;
+  background-color: #0000002d;
+  backdrop-filter: blur(10px);
 }
 
 .bg-principal {
-    height: calc(100vh);
-    background-image: url('/assets/img/3.png');
-    background-size: cover;
-    background-position: center;
+  height: calc(100vh);
+  background-image: url('/assets/img/3.png');
+  background-size: cover;
+  background-position: center;
 }
 
 .texto {
-    font-family: 'Poppins', sans-serif; 
+  font-family: 'Poppins', sans-serif;
 }
-.texto h1{
-    font-weight: bold; 
-}
-  .bg-gris{
-    background-color: #E8E8E8; 
-  }
-.quienes-somos img{
-    width: 100%;
-}
-.row-card{ 
-    display: flex;
-    justify-content:space-evenly;
-    align-content: center; 
-}
-.card{
-    margin-bottom: 3em;
-}
- 
-.bg-contactanos { 
-    background-image: url('/assets/img/bg-contact.jpg');
-    background-size: cover; 
-    background-position: center;   
-}
- 
 
-  .form-contact h2{
-    color: white;
-  }
- 
-  .form-contact{
-    background-color: #0000002d;
-    border-radius: 7px;
-    backdrop-filter: blur(2px);
-  }
-  textarea{
-    height: 200px!important;
-    resize: none;
-  }
-  i{
-    font-weight: 400;
-    color: rgb(0, 255, 0);
-    font-size: 1.3em;
-    padding: 4px;
-  }
+.texto h1 {
+  font-weight: bold;
+}
 
- .cotizar{
-  background-color: #E8E8E8; 
- }
+.bg-gris {
+  background-color: var(--colorGris);
+}
+
+.quienes-somos img {
+  width: 100%;
+}
+
+.row-card {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+.card {
+  margin-bottom: 3em;
+}
+
+.bg-contactanos {
+  background-image: url('/assets/img/bg-contact.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+
+.form-contact h2 {
+  color: white;
+}
+
+.form-contact {
+  background-color: #0000002d;
+  border-radius: 7px;
+  backdrop-filter: blur(2px);
+}
+
+textarea {
+  height: 200px !important;
+  resize: none;
+}
+
+i {
+  font-weight: 400;
+  color: rgb(0, 255, 0);
+  font-size: 1.3em;
+  padding: 4px;
+}
+
+.cotizar {
+  background-color: var(--colorGris);
+}
+
+#precio-total {
+  border-top: 1px solid black;
+}
+
+.precio-unitario:nth-child(odd){
+  background-color: var(--colorGris);
+}
