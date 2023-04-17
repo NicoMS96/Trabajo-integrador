@@ -126,8 +126,8 @@ $.ajax({
   url: 'https://www.dolarsi.com/api/api.php?type=valoresprincipales',
   dataType: 'json',
   success: function (data) {
-    console.log(data[1].casa.nombre + " " + data[1].casa.compra);
-    precioDolarBlue = data[1].casa.compra;
+    console.log(data[1].casa.nombre + " " + data[1].casa.venta);
+    precioDolarBlue = data[1].casa.venta;
   }
 });
 
@@ -275,13 +275,13 @@ $(document).ready(function () {
 
   // Controla si se debe mostrar o no el modal
   const submitButton = $("#submitCotiza");
-  let prueba = function () {
+  let valiarSubmit = function () {
     tamaño = Number($('#tamaño').val());
     detalles = Number($('#detalles').val());
     estilo = Number($('#estilo').val());
     lugar = Number($('#lugar').val());
 
-    if (validarCotizacion(tamaño, detalles, estilo, lugar)) {
+    if (validarCotizacion(tamaño, detalles, estilo, lugar, false)) {
       submitButton.attr("data-bs-toggle", "modal");
       submitButton.attr("data-bs-target", "#modalCotizacion");
     }
@@ -292,20 +292,20 @@ $(document).ready(function () {
   }
 
   $('#personalizado, #color, #anestesia').on('click', function () {
-    prueba();
+    valiarSubmit();
   });
 
   $('#lugar, #estilo, #detalles, #tamaño').on('change', function () {
-    prueba();
+    valiarSubmit();
   });
 
 
 
   // evento del submit
   $('#form-wizard').on('submit', function (event) {
-    event.preventDefault(); 
+    event.preventDefault();
 
-    prueba();
+    valiarSubmit();
     let opcTamaño = $('#tamaño option:selected').text();
     let opcDetalles = $('#detalles option:selected').text();
     let opcLugar = $('#lugar option:selected').text();
@@ -316,7 +316,7 @@ $(document).ready(function () {
     let porcPerso = $('#personalizado').is(":checked") ? 0.2 : 0;
     let opcAnestesia = $('#anestesia').is(":checked") ? "Si" : "No";
     let anestesia = $('#anestesia').is(":checked") ? 8 : 0;
-    
+
     totalTattoo(precioTattoo, porcentajes);
 
     if (validarCotizacion(tamaño, detalles, estilo, lugar, true)) {
@@ -346,8 +346,9 @@ $(document).ready(function () {
                       <span> </span><span><b>Precio total:</b> $${(precioTotal).toFixed("2")}</span>
                     </div>
                     `);
+    //console.log(Number(precioDolarBlue) * precioTotal)
 
-    }  
+    }
 
   });
 });
@@ -374,7 +375,7 @@ let validarCotizacion = function (tamaño, detalles, estilo, lugar, mostrarMsj) 
     valido = false;
     mensaje += "Seleccione el lugar donde quiere el tattoo. \n";
   }
-  if (mostrarMsj && !valido )
+  if (mostrarMsj && !valido)
     alert(mensaje);
 
   return valido;
