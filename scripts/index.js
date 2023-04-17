@@ -91,11 +91,11 @@ let validarFromContacto = function (nombre, email, asunto, mensaje) {
 
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (nombre == "") {
+  if (nombre == "" || nombre == null) {
     valid = false;
     error += "El campo nombre no puede estar vacio \n";
   }
-  if (email == "") {
+  if (email == "" || email == null) {
     valid = false;
     error += "El campo email no puede estar vacio \n";
   }
@@ -103,11 +103,11 @@ let validarFromContacto = function (nombre, email, asunto, mensaje) {
     valid = false;
     error += "El campo email no tiene formato correcto \n";
   }
-  if (asunto == "") {
+  if (asunto == "" || asunto == null) {
     valid = false;
     error += "El campo asunto no puede estar vacio \n";
   }
-  if (mensaje == "") {
+  if (mensaje == "" || mensaje == null) {
     valid = false;
     error += "El campo mensaje no puede estar vacio \n";
   }
@@ -178,7 +178,11 @@ let porcentajes = 0;
 let precioTattoo = 0;
 // validar cotizacion 
 $(document).ready(function () {
-  precio = $("#precio");
+  let precio = $("#precio");
+  let tamaño = Number($('#tamaño').val());
+  let detalles = Number($('#detalles').val());
+  let estilo = Number($('#estilo').val());
+  let lugar = Number($('#lugar').val());
 
   $("#color").click(() => {
     if ($("#color").is(':checked')) {
@@ -187,6 +191,7 @@ $(document).ready(function () {
     else {
       porcentajes -= 0.1;
     }
+
     totalTattoo(precioTattoo, porcentajes);
   })
 
@@ -267,43 +272,40 @@ $(document).ready(function () {
     precio.text(`$${(precioTotal).toFixed("2")}`);
   }
 
-  /*
-    const submitButton = $("#modalCotizacion");
-    submitButton.removeAttribute('data-bs-toggle');
-    submitButton.removeAttribute('data-bs-target'); data-bs-toggle="modal" data-bs-target="#modalCotizacion"
-  */
-    const submitButton = $("#modalCotizacion");
-  function slect() {
-    var selects = $('select'); // Selecciona todos los elementos <select>
-    var allSelected = true; // Inicializa la variable que indica si todos los selects tienen un valor seleccionado como true
 
-    selects.each(function () { // Itera sobre cada elemento <select>
-      if (!$(this).val() || !validarCotizacion(tamaño, detalles, estilo, lugar)) { // Si el valor seleccionado es falso, es decir, si no hay un valor seleccionado
-        allSelected = false; // Establece la variable allSelected como falsa 
-      }
-    });
+  // Controla si se debe mostrar o no el modal
+  const submitButton = $("#submitCotiza");
+  let prueba = function () {
+    tamaño = Number($('#tamaño').val());
+    detalles = Number($('#detalles').val());
+    estilo = Number($('#estilo').val());
+    lugar = Number($('#lugar').val());
 
-    if (allSelected) { // Si todos los selects tienen un valor seleccionado
+    if (validarCotizacion(tamaño, detalles, estilo, lugar)) {
       submitButton.attr("data-bs-toggle", "modal");
       submitButton.attr("data-bs-target", "#modalCotizacion");
-      alert("debe")
     }
-    else{
-      alert("noo debe")
-      submitButton.removeAttribute('data-bs-toggle');
-      submitButton.removeAttribute('data-bs-target');
+    else {
+      submitButton.removeAttr('data-bs-toggle');
+      submitButton.removeAttr('data-bs-target');
     }
   }
-  slect();
+
+  $('#personalizado, #color, #anestesia').on('click', function () {
+    prueba();
+  });
+
+  $('#lugar, #estilo, #detalles, #tamaño').on('change', function () {
+    prueba();
+  });
+
+
 
   // evento del submit
   $('#form-wizard').on('submit', function (event) {
-    event.preventDefault();
-    slect();
-    let tamaño = Number($('#tamaño').val());
-    let detalles = Number($('#detalles').val());
-    let estilo = Number($('#estilo').val());
-    let lugar = Number($('#lugar').val());
+    event.preventDefault(); 
+
+    prueba();
     let opcTamaño = $('#tamaño option:selected').text();
     let opcDetalles = $('#detalles option:selected').text();
     let opcLugar = $('#lugar option:selected').text();
@@ -313,11 +315,11 @@ $(document).ready(function () {
     let opcPerso = $('#personalizado').is(":checked") ? "Si" : "No";
     let porcPerso = $('#personalizado').is(":checked") ? 0.2 : 0;
     let opcAnestesia = $('#anestesia').is(":checked") ? "Si" : "No";
-    let anestesia = $('#personalizado').is(":checked") ? 8 : 0;
-
+    let anestesia = $('#anestesia').is(":checked") ? 8 : 0;
+    
     totalTattoo(precioTattoo, porcentajes);
 
-    if (validarCotizacion(tamaño, detalles, estilo, lugar)) {
+    if (validarCotizacion(tamaño, detalles, estilo, lugar, true)) {
       let divDatos = $("#datosResumen");
       divDatos.html(`<div class="precio-unitario d-flex justify-content-between"> 
                       <span>Tamaño: ${opcTamaño} </span><span>$${tamaño}</span>
@@ -341,18 +343,18 @@ $(document).ready(function () {
                       <span>Anestesia?: ${opcAnestesia} </span><span>$${anestesia}</span>
                     </div>
                     <div id="precio-total" class="d-flex justify-content-between my-2"> 
-                      <span> </span><span><b>Precio total:</b> $${(precioTotal * precioDolarBlue).toFixed("2")}</span>
+                      <span> </span><span><b>Precio total:</b> $${(precioTotal).toFixed("2")}</span>
                     </div>
                     `);
 
-    }
+    }  
 
   });
 });
 
 
 
-let validarCotizacion = function (tamaño, detalles, estilo, lugar) {
+let validarCotizacion = function (tamaño, detalles, estilo, lugar, mostrarMsj) {
   let valido = true;
   let mensaje = "";
 
@@ -372,10 +374,8 @@ let validarCotizacion = function (tamaño, detalles, estilo, lugar) {
     valido = false;
     mensaje += "Seleccione el lugar donde quiere el tattoo. \n";
   }
-
-  if (!valido) {
+  if (mostrarMsj && !valido )
     alert(mensaje);
-  }
 
   return valido;
 }
